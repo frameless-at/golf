@@ -112,13 +112,32 @@ class contactForm{
 
   // Konstruktor
   public function __construct($cfg) {
-      $this->cfg = $cfg;
       $this->merge_post = []; // Initialisierung
+      
+      $this->cfg['captacha_length'] = 6;
+      $this->cfg['emailaddress'] = $cfg['email'];
+      $this->cfg['confirmation_email_subject'] = 'Neues Mitglied HSV Sektion Golf';
+      $this->cfg['form_validationmessage'] = $cfg['form_validationmessage'];
+      $this->cfg['form_error_captcha'] = $cfg['form_error_captcha'];
+      $this->cfg['form_error_emptyfield'] = $cfg['form_error_emptyfield'];
+      $this->cfg['form_error_promo'] = $cfg['form_error_promo'];
+      $this->cfg['form_error_invalidemailaddress'] = $cfg['form_error_invalidemailaddress'];
+      $this->cfg['form_validationmessage'] = $cfg['form_validationmessage'];
+      $this->cfg['form_emailnotificationinputid'] = $cfg['form_emailnotificationinputid'];
+      $this->cfg['form_emailnotificationtitle'] = $cfg['form_emailnotificationtitle'];
+      $this->cfg['form_emailnotificationmessage'] = $cfg['form_emailnotificationmessage'];
+      $this->mailheaders_brut .= "Reply-To: HSV Sektion Golf <sl.golf@hsv-wien.at>\r\n";
+      $this->mailheaders_brut .= "MIME-Version: 1.0\r\n";
+      $this->mailheaders_brut .= "Content-type: text/plain; charset=utf-8\r\n";
+      $this->mailheaders_brut .= "X-Mailer: PHP/".phpversion()."\r\n";
+      $this->demo = 0;
+      $this->envato_link = 'https://codecanyon.net/item/contact-form-generator/1719810';
   }
+
   //-------------------------------------------
   // end Patch
   //-------------------------------------------
-    
+  /*  
   function contactForm($cfg)
   {
     
@@ -128,15 +147,11 @@ class contactForm{
      * $this->cfg['emailaddress']: the email address on which you want to receive the messages from users through your website
      * $this->cfg['confirmation_email_subject']: the subject of the email containing the message sent by users through your website
      * 
-     */
+     
     $this->cfg['captacha_length'] = 6;
-    
     $this->cfg['emailaddress'] = $cfg['email'];
-    
     $this->cfg['confirmation_email_subject'] = 'Neues Mitglied HSV Sektion Golf';
-    
     $this->cfg['form_validationmessage'] = $cfg['form_validationmessage'];
-    
     $this->cfg['form_error_captcha'] = $cfg['form_error_captcha'];
     $this->cfg['form_error_emptyfield'] = $cfg['form_error_emptyfield'];
     $this->cfg['form_error_promo'] = $cfg['form_error_promo'];
@@ -145,16 +160,14 @@ class contactForm{
     $this->cfg['form_emailnotificationinputid'] = $cfg['form_emailnotificationinputid'];
     $this->cfg['form_emailnotificationtitle'] = $cfg['form_emailnotificationtitle'];
     $this->cfg['form_emailnotificationmessage'] = $cfg['form_emailnotificationmessage'];
-    
     $this->mailheaders_brut .= "Reply-To: HSV Sektion Golf <sl.golf@hsv-wien.at>\r\n";
     $this->mailheaders_brut .= "MIME-Version: 1.0\r\n";
     $this->mailheaders_brut .= "Content-type: text/plain; charset=utf-8\r\n";
     $this->mailheaders_brut .= "X-Mailer: PHP/".phpversion()."\r\n";
-    
     $this->demo = 0;
     $this->envato_link = 'https://codecanyon.net/item/contact-form-generator/1719810';
   }
-  
+  */
   
   function sendMail()
   {
@@ -429,8 +442,8 @@ https://golf.hsv-wien.at';
   $mail2->FromName = "HSV wiengolf";
   
   //Empfängeradresse setzen
-  //$mail2->addAddress($this->cfg['emailaddress']);
-  $mail2->addAddress('m.kozak@frameless.at');
+  $mail2->addAddress($this->cfg['emailaddress']);
+  //$mail2->addAddress('m.kozak@frameless.at');
   
   //Betreff der Email setzen
   $mail2->Subject = 'Neues Mitglied HSV wiengolf';
