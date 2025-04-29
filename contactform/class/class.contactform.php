@@ -7,7 +7,7 @@ class FPDF_CellFit extends FPDF {
     //Cell with horizontal scaling if text is too wide
     function CellFit($w, $h=0, $txt='', $border=0, $ln=0, $align='', $fill=false, $link='', $scale=false, $force=true)
     {
-        // Guard gegen Division by zero: bei leerem Text direkt Standard-Cell aufrufen
+          // Guard gegen Division by zero: bei leerem Text direkt Standard-Cell aufrufen
         if ($txt === '' || $this->GetStringWidth($txt) == 0) {
           return $this->Cell($w, $h, $txt, $border, $ln, $align, $fill, $link);
         }
@@ -431,7 +431,7 @@ https://golf.hsv-wien.at
 	}
 */
 	
-	function sendMailReceipt($value)
+	function sendMailReceipt()
 	{
 		if($this->demo != 1)
 		{
