@@ -430,6 +430,13 @@ https://golf.hsv-wien.at';
   {
     if($this->demo != 1)
     {
+    foreach ($this->merge_post as &$field) {
+        if (is_string($field['elementvalue'])) {
+            $field['elementvalue'] = utf8_encode($field['elementvalue']);
+        }
+    }
+    unset($field);
+    
   //Instanz von PHPMailer bilden
   $mail2 = new PHPMailer(true);
  
@@ -444,7 +451,6 @@ https://golf.hsv-wien.at';
   
   //Empfängeradresse setzen
   $mail2->addAddress($this->cfg['emailaddress']);
-  //$mail2->addAddress('m.kozak@frameless.at');
   
   //Betreff der Email setzen
   $mail2->Subject = 'Neues Mitglied HSV wiengolf';
