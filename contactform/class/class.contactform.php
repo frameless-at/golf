@@ -7,7 +7,7 @@ class FPDF_CellFit extends FPDF {
     //Cell with horizontal scaling if text is too wide
     function CellFit($w, $h=0, $txt='', $border=0, $ln=0, $align='', $fill=false, $link='', $scale=false, $force=true)
     {
-          // Guard gegen Division by zero: bei leerem Text direkt Standard-Cell aufrufen
+        // Guard gegen Division by zero: bei leerem Text direkt Standard-Cell aufrufen
         if ($txt === '' || $this->GetStringWidth($txt) == 0) {
           return $this->Cell($w, $h, $txt, $border, $ln, $align, $fill, $link);
         }
@@ -168,7 +168,8 @@ class contactForm{
  
   //Format setzen
   $mail->IsHTML(true);
- 
+  $mail->CharSet = 'UTF-8';
+
   //Absenderadresse der Email setzen
   $mail->From = "sl.golf@hsv-wien.at";
   
@@ -192,7 +193,7 @@ class contactForm{
   $Nachname = utf8_decode($this->merge_post[2]['elementvalue']);
  
 //Text der EMail setzen
-  $mail->Body = utf8_decode("
+  $mail->Body = "<!DOCTYPE html><html><body>
 <p>Sehr {$Anrede} {$titel} {$Nachname},</p>
 Ihre Onlineanmeldung wurde erfolgreich empfangen.<br>
 Anbei erhalten Sie die ausgefüllten Anmeldeunterlagen mit der Bitte diese unterfertigt zurückzuschicken.<br>
@@ -214,9 +215,10 @@ Michael Blaha, MSc<br>
 Präsident<br>
 HSV WIEN<br>
 <a href='https://golf.hsv-wien.at'>https://golf.hsv-wien.at</a><br>
-<p><img src='https://golf.hsv-wien.at/golfanmeldung/logo_mail.png' alt='logo'></p>
-");
-$mail->AltBody = utf8_decode("Sehr {$Anrede} {$titel} {$this->merge_post[2]['elementvalue']},
+<p><img src='https://golf.hsv-wien.at/golfanmeldung/logo_mail.png' alt='logo'></p></body></html>
+";
+
+$mail->AltBody = "Sehr {$Anrede} {$titel} {$this->merge_post[2]['elementvalue']},
 Ihre Onlineanmeldung wurde erfolgreich empfangen.
 Anbei erhalten Sie die ausgefüllten Anmeldeunterlagen mit der Bitte diese unterfertigt zurückzuschicken.
 Um eine schnelle Bearbeitung sicherstellen zu können, ersuchen wir Sie diese per Mail an sl.golf@hsv-wien.at zu senden.
@@ -236,8 +238,8 @@ Mit freundlichen Grüßen und schönes Spiel
 Michael Blaha, MSc
 Präsident
 HSV WIEN
-https://golf.hsv-wien.at
-");
+https://golf.hsv-wien.at';
+";
     
   //Variablen Definieren
   $timestamp = time();
@@ -406,6 +408,9 @@ https://golf.hsv-wien.at
   $mail->Send();
 		
 	}
+
+
+
 /*
 	{
 		$mail_body .= 'Anmeldung vom: '.date("F j, Y, g:i A")
@@ -448,7 +453,7 @@ https://golf.hsv-wien.at
   $mail2->FromName = "HSV wiengolf";
   
   //Empfängeradresse setzen
-  $mail2->AddAddress("sl.golf@hsv-wien.at");
+  //$mail2->AddAddress("sl.golf@hsv-wien.at");
   //$mail2->AddAddress("luka@nikolic.at");
   
   //Betreff der Email setzen
@@ -595,9 +600,7 @@ $file3 = "Titel;Nachname;Vorname;Adresse;PLZ;Ort;Staat;Erstellungsdatum;\r\n{$ti
 	
 	
   /**
-  /**
-  * Säubert einen Wert für SQL-Queries.
-  * Nutzt addslashes() für PHP 8.3-Kompatibilität ohne DB-Verbindung.
+  * Nutzt addslashes() für PHP 8.3-Kompatibilität
   */
   protected function quote_smart($value)
   {
