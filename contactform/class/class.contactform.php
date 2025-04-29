@@ -1,6 +1,6 @@
 ﻿<?php
 require_once('class.fpdf.php');
-require 'vendor/autoload.php';
+require dirname(__DIR__, 2) . '/vendor/autoload.php';
 
 use PHPMailer\PHPMailer\PHPMailer;
 use PHPMailer\PHPMailer\Exception;
@@ -162,8 +162,8 @@ class contactForm{
   //erster Wert aus Array
   foreach($this->merge_post as $valuetitel)  break;
   {
-        $titel = $this->quote_smart($valuetitel['elementvalue']);
-      }
+     $titel = trim($valuetitel['elementvalue']);
+  }
 
   //Instanz von PHPMailer bilden
   $mail = new PHPMailer(true);
@@ -194,10 +194,11 @@ class contactForm{
     { $Anrede = "geehrter Herr";
   }
   $Nachname = $this->merge_post[2]['elementvalue'];
- 
+ $full_name = !empty($titel) ? "{$titel} {$Nachname}" : $Nachname;
+
 //Text der EMail setzen
   $mail->Body = "<!DOCTYPE html><html><body>
-<p>Sehr {$Anrede} {$titel} {$Nachname},</p>
+<p>Sehr {$Anrede} {$full_name},</p>
 Ihre Onlineanmeldung wurde erfolgreich empfangen.<br>
 Anbei erhalten Sie die ausgefüllten Anmeldeunterlagen mit der Bitte diese unterfertigt zurückzuschicken.<br>
 Um eine schnelle Bearbeitung sicherstellen zu können, ersuchen wir Sie diese per Mail an <a href='mailto:sl.golf@hsv-wien.at'>sl.golf@hsv-wien.at</a> zu senden.<br>
@@ -221,8 +222,7 @@ HSV WIEN<br>
 <p><img src='https://golf.hsv-wien.at/golfanmeldung/logo_mail.png' alt='logo'></p></body></html>
 ";
 
-$mail->AltBody = "Sehr {$Anrede} {$titel} {$this->merge_post[2]['elementvalue']},
-Ihre Onlineanmeldung wurde erfolgreich empfangen.
+$mail->AltBody = "Sehr {$Anrede} {$full_name},\nIhre Onlineanmeldung wurde erfolgreich empfangen.
 Anbei erhalten Sie die ausgefüllten Anmeldeunterlagen mit der Bitte diese unterfertigt zurückzuschicken.
 Um eine schnelle Bearbeitung sicherstellen zu können, ersuchen wir Sie diese per Mail an sl.golf@hsv-wien.at zu senden.
 Alternativ können Sie die Unterlagen auch per Post an unser Sekretariat senden.
@@ -429,8 +429,7 @@ https://golf.hsv-wien.at';
   $mail2->FromName = "HSV wiengolf";
   
   //Empfängeradresse setzen
-  //$mail2->AddAddress("sl.golf@hsv-wien.at");
-  //$mail2->AddAddress("luka@nikolic.at");
+  $mail2->addAddress($this->cfg['emailaddress']);
   
   //Betreff der Email setzen
   $mail2->Subject = 'Neues Mitglied HSV wiengolf';
@@ -449,7 +448,7 @@ https://golf.hsv-wien.at';
   $Geschlecht = $this->merge_post[3]['elementvalue'];
   $Name = "{$titel} {$this->merge_post[1]['elementvalue']} {$this->merge_post[2]['elementvalue']}";
   $Vorname = $this->merge_post[1]['elementvalue'];
-  $Vornach = "{$Vorname} {$Nachname}";
+  $Vornach = !empty($titel) ? "{$titel} {$Vorname} {$Nachname}" : "{$Vorname} {$Nachname}";
   $Adresse = "{$this->merge_post[6]['elementvalue']}, {$this->merge_post[7]['elementvalue']} {$this->merge_post[8]['elementvalue']}, {$this->merge_post[9]['elementvalue']}";
   $Adresse1 = $this->merge_post[6]['elementvalue'];
   $Adresse2 = "{$this->merge_post[7]['elementvalue']} {$this->merge_post[8]['elementvalue']}, {$this->merge_post[9]['elementvalue']}";
