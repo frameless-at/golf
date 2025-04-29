@@ -115,60 +115,61 @@ class contactForm{
   //-------------------------------------------
   // end Patch
   //-------------------------------------------
-		
-	function contactForm($cfg)
-	{
-		
-		/***********************************************************************************************************************************
-		 * CONFIGURATION 
-		 *
-		 * $this->cfg['emailaddress']: the email address on which you want to receive the messages from users through your website
-		 * $this->cfg['confirmation_email_subject']: the subject of the email containing the message sent by users through your website
-		 * 
-		 */
-		$this->cfg['captacha_length'] = 6;
-		
-		$this->cfg['emailaddress'] = $cfg['email'];
-		
-		$this->cfg['confirmation_email_subject'] = 'Neues Mitglied HSV Sektion Golf';
-		
-		$this->cfg['form_validationmessage'] = $cfg['form_validationmessage'];
-		
-		$this->cfg['form_error_captcha'] = $cfg['form_error_captcha'];
-		$this->cfg['form_error_emptyfield'] = $cfg['form_error_emptyfield'];
-		$this->cfg['form_error_promo'] = $cfg['form_error_promo'];
-		$this->cfg['form_error_invalidemailaddress'] = $cfg['form_error_invalidemailaddress'];
-		$this->cfg['form_validationmessage'] = $cfg['form_validationmessage'];
-		$this->cfg['form_emailnotificationinputid'] = $cfg['form_emailnotificationinputid'];
-		$this->cfg['form_emailnotificationtitle'] = $cfg['form_emailnotificationtitle'];
-		$this->cfg['form_emailnotificationmessage'] = $cfg['form_emailnotificationmessage'];
-		
-		$this->mailheaders_brut  = "From: HSV Sektion Golf <sl.golf@hsv-wien.at>\r\n";		
-		$this->mailheaders_brut .= "Reply-To: HSV Sektion Golf <sl.golf@hsv-wien.at>\r\n";
-		$this->mailheaders_brut .= "MIME-Version: 1.0\r\n";
-		$this->mailheaders_brut .= "Content-type: text/plain; charset=utf-8\r\n";
-		$this->mailheaders_brut .= "X-Mailer: PHP/".phpversion()."\r\n";
-		
-		$this->demo = 0;
-		$this->envato_link = 'https://codecanyon.net/item/contact-form-generator/1719810';
-	}
-	
-	
-	function sendMail()
-	{
-		
+    
+  function contactForm($cfg)
+  {
+    
+    /***********************************************************************************************************************************
+     * CONFIGURATION 
+     *
+     * $this->cfg['emailaddress']: the email address on which you want to receive the messages from users through your website
+     * $this->cfg['confirmation_email_subject']: the subject of the email containing the message sent by users through your website
+     * 
+     */
+    $this->cfg['captacha_length'] = 6;
+    
+    $this->cfg['emailaddress'] = $cfg['email'];
+    
+    $this->cfg['confirmation_email_subject'] = 'Neues Mitglied HSV Sektion Golf';
+    
+    $this->cfg['form_validationmessage'] = $cfg['form_validationmessage'];
+    
+    $this->cfg['form_error_captcha'] = $cfg['form_error_captcha'];
+    $this->cfg['form_error_emptyfield'] = $cfg['form_error_emptyfield'];
+    $this->cfg['form_error_promo'] = $cfg['form_error_promo'];
+    $this->cfg['form_error_invalidemailaddress'] = $cfg['form_error_invalidemailaddress'];
+    $this->cfg['form_validationmessage'] = $cfg['form_validationmessage'];
+    $this->cfg['form_emailnotificationinputid'] = $cfg['form_emailnotificationinputid'];
+    $this->cfg['form_emailnotificationtitle'] = $cfg['form_emailnotificationtitle'];
+    $this->cfg['form_emailnotificationmessage'] = $cfg['form_emailnotificationmessage'];
+    
+    $this->mailheaders_brut  = "From: HSV Sektion Golf <sl.golf@hsv-wien.at>\r\n";		
+    $this->mailheaders_brut .= "Reply-To: HSV Sektion Golf <sl.golf@hsv-wien.at>\r\n";
+    $this->mailheaders_brut .= "MIME-Version: 1.0\r\n";
+    $this->mailheaders_brut .= "Content-type: text/plain; charset=utf-8\r\n";
+    $this->mailheaders_brut .= "X-Mailer: PHP/".phpversion()."\r\n";
+    
+    $this->demo = 0;
+    $this->envato_link = 'https://codecanyon.net/item/contact-form-generator/1719810';
+  }
+  
+  
+  function sendMail()
+  {
+    
   //erster Wert aus Array
   foreach($this->merge_post as $valuetitel)  break;
   {
-				$titel = $this->quote_smart($valuetitel['elementvalue']);
-			}
+        $titel = $this->quote_smart($valuetitel['elementvalue']);
+      }
 
   //Instanz von PHPMailer bilden
   $mail = new PHPMailer();
- 
-  //Format setzen
-  $mail->IsHTML(true);
+  
   $mail->CharSet = 'UTF-8';
+  $mail->Encoding = 'base64';
+  $mail->isHTML(true);
+  $mail->ContentType = 'multipart/mixed';
 
   //Absenderadresse der Email setzen
   $mail->From = "sl.golf@hsv-wien.at";
@@ -187,10 +188,10 @@ class contactForm{
   //Anrede
   if($this->merge_post[3]['elementvalue'] == "weiblich")
   { $Anrede = "geehrte Frau";
-	  }else
-	  { $Anrede = "geehrter Herr";
+    }else
+    { $Anrede = "geehrter Herr";
   }
-  $Nachname = utf8_decode($this->merge_post[2]['elementvalue']);
+  $Nachname = $this->merge_post[2]['elementvalue'];
  
 //Text der EMail setzen
   $mail->Body = "<!DOCTYPE html><html><body>
@@ -246,7 +247,7 @@ https://golf.hsv-wien.at';
   $datum = date("d.m.Y", $timestamp);
 
   $Name = "{$titel} {$this->merge_post[1]['elementvalue']} {$this->merge_post[2]['elementvalue']}";
-  $Vorname = utf8_decode($this->merge_post[1]['elementvalue']);
+  $Vorname = $this->merge_post[1]['elementvalue'];
   $Vornach = "{$Vorname} {$Nachname}";
   $Adresse = "{$this->merge_post[6]['elementvalue']}, {$this->merge_post[7]['elementvalue']} {$this->merge_post[8]['elementvalue']}, {$this->merge_post[9]['elementvalue']}";
   $Adresse1 = $this->merge_post[6]['elementvalue'];
@@ -279,101 +280,101 @@ https://golf.hsv-wien.at';
   $pdf1->SetFont('Arial','B',10); 
   $pdf1->ln(41);
   $pdf1->Cell(29);
-  $pdf1->CellFitScale(156,9,utf8_decode($Name),0,1,'',0);
+  $pdf1->CellFitScale(156,9,$Name,0,1,'',0);
   $pdf1->ln(1);
   $pdf1->Cell(29);
-  $pdf1->CellFitScale(156,9,utf8_decode($Adresse),0,1,'',0);
+  $pdf1->CellFitScale(156,9,$Adresse,0,1,'',0);
   $pdf1->ln(1);
   $pdf1->Cell(29);
   $pdf1->CellFitScale(59,9,$Telefon,0,1,'',0);
   $pdf1->ln(-9);
   $pdf1->Cell(127);
-  $pdf1->CellFitScale(58,9,utf8_decode($Mailadress),0,1,'',0);
+  $pdf1->CellFitScale(58,9,$Mailadress,0,1,'',0);
   $pdf1->ln(1);
   $pdf1->Cell(29);
   $pdf1->CellFitScale(59,9,$Geburtsdatum,0,1,'',0);
   $pdf1->ln(-9);
   $pdf1->Cell(127);
-  $pdf1->CellFitScale(58,9,utf8_decode($Staatsbuergerschaft),0,1,'',0);  
+  $pdf1->CellFitScale(58,9,$Staatsbuergerschaft,0,1,'',0);  
   $pdf1->ln(1);
   $pdf1->Cell(29);
-  $pdf1->CellFitScale(59,9,utf8_decode($Ausweistyp),0,1,'',0);
+  $pdf1->CellFitScale(59,9,$Ausweistyp,0,1,'',0);
   $pdf1->ln(-9);
   $pdf1->Cell(127);
   $pdf1->CellFitScale(58,9,$Ausweisnummer,0,1,'',0); 
   $pdf1->ln(1);
   $pdf1->Cell(29);
-  $pdf1->CellFitScale(59,9,utf8_decode($Ausweisbehoerde),0,1,'',0);
+  $pdf1->CellFitScale(59,9,$Ausweisbehoerde,0,1,'',0);
   $pdf1->ln(-9);
   $pdf1->Cell(127);
   $pdf1->CellFitScale(58,9,$Ausweisdatum,0,1,'',0); 
   $pdf1->SetFont('Arial','B',16);
   
   if($Mitgliedschaft == 1){
-	  $pdf1->Text(11,126,'x');
-	  $Mitgliedschafttext = "Standard 199";
-	  $Mitgliedschaftwert = "199";
-	  }
+    $pdf1->Text(11,126,'x');
+    $Mitgliedschafttext = "Standard 199";
+    $Mitgliedschaftwert = "199";
+    }
   if($Mitgliedschaft == 2){
-	  $pdf1->Text(11,131,'x');
-	  $Mitgliedschafttext = "Student 149";
-	  $Mitgliedschaftwert = "149";
-	  }
+    $pdf1->Text(11,131,'x');
+    $Mitgliedschafttext = "Student 149";
+    $Mitgliedschaftwert = "149";
+    }
   if($Mitgliedschaft == 3){
-	  $pdf1->Text(84,126,'x');
-	  $Mitgliedschafttext = "Jugend 99";
-	  $Mitgliedschaftwert = "99";
-	  }
+    $pdf1->Text(84,126,'x');
+    $Mitgliedschafttext = "Jugend 99";
+    $Mitgliedschaftwert = "99";
+    }
   if($Mitgliedschaft == 4){
-	  $pdf1->Text(84,131,'x');
-	  $Mitgliedschafttext = "Kinder 0";
-	  $Mitgliedschaftwert = "0";
-	  }
+    $pdf1->Text(84,131,'x');
+    $Mitgliedschafttext = "Kinder 0";
+    $Mitgliedschaftwert = "0";
+    }
 
   if($Extracard == 2){
-	  $pdf1->Text(11,141,'x');
-	  $ichbintext = "Extra Golf VIP Card EUR 30,-";
-	  }
-	  
+    $pdf1->Text(11,141,'x');
+    $ichbintext = "Extra Golf VIP Card EUR 30,-";
+    }
+    
   if($Greenfee == 2){
-	  $pdf1->Text(84,141,'x');
-	  $ichbintext = "Greenfee Package EUR 69,-";
-	  }   
+    $pdf1->Text(84,141,'x');
+    $ichbintext = "Greenfee Package EUR 69,-";
+    }   
 
   if($Ichbin == 1){
-	  $pdf1->Text(13,220,'x');
-	  $ichbintext = "Platzerlaubnis";
-	  }
+    $pdf1->Text(13,220,'x');
+    $ichbintext = "Platzerlaubnis";
+    }
   if($Ichbin == 2){
-	  $pdf1->Text(13,225,'x');
-	  $ichbintext = "Turniererlaubnis";
-	  }   
+    $pdf1->Text(13,225,'x');
+    $ichbintext = "Turniererlaubnis";
+    }   
   if($Ichbin == 3){
-	  $pdf1->Text(13,230,'x');
-	  $ichbintext = "Stammvorgabe";
-	  }
-	   
+    $pdf1->Text(13,230,'x');
+    $ichbintext = "Stammvorgabe";
+    }
+     
   $pdf1->SetFont('Arial','B',10);
   $pdf1->ln(131);
   $pdf1->Cell(5);
-  $pdf1->CellFitScale(75,9,utf8_decode($Ort1),0,1,'',0); 
+  $pdf1->CellFitScale(75,9,$Ort1,0,1,'',0); 
   $pdf1->ln(14);
   $pdf1->Cell(5);
-  $pdf1->CellFitScale(75,9,utf8_decode($Ort2),0,1,'',0); 
+  $pdf1->CellFitScale(75,9,$Ort2,0,1,'',0); 
   $pdf1->ln(-139);
   $pdf1->Cell(150);
   $pdf1->CellFitScale(58,8,$Promo,0,1,'',0);
   
   if($Jahr == 1){
-	  $pdf1->Text(128,120,'2025');
-	  }
+    $pdf1->Text(128,120,'2025');
+    }
   if($Jahr == 2){
-	  $pdf1->Text(128,120,'2026');
-	  }
+    $pdf1->Text(128,120,'2026');
+    }
   if($Jahr == 3){
-	  $pdf1->Text(128,120,'2027');
-	  }
-	  
+    $pdf1->Text(128,120,'2027');
+    }
+    
   //PDF Sepa erstellen
   $pdf2 = new FPDF_CellFit();
   $pdf2->AddPage();
@@ -381,13 +382,13 @@ https://golf.hsv-wien.at';
   $pdf2->SetFont('Arial','B',14); 
   $pdf2->ln(168);
   $pdf2->Cell(17);
-  $pdf2->CellFitScale(172,8,utf8_decode($Name),0,1,'',0);
+  $pdf2->CellFitScale(172,8,$Name,0,1,'',0);
   $pdf2->ln(2);
   $pdf2->Cell(17);
-  $pdf2->CellFitScale(172,8,utf8_decode($Adresse1),0,1,'',0);
+  $pdf2->CellFitScale(172,8,$Adresse1,0,1,'',0);
   $pdf2->ln(2);
   $pdf2->Cell(17);
-  $pdf2->CellFitScale(172,8,utf8_decode($Adresse2),0,1,'',0);
+  $pdf2->CellFitScale(172,8,$Adresse2,0,1,'',0);
   $pdf2->ln(2);
   $pdf2->Cell(17);
   $pdf2->CellFitScale(107,8,$IBAN,0,1,'',0);
@@ -396,7 +397,7 @@ https://golf.hsv-wien.at';
   $pdf2->CellFitScale(107,8,$BIC,0,1,'',0);
   $pdf2->ln(24);
   $pdf2->Cell(2);
-  $pdf2->CellFitScale(65,8,utf8_decode($Ort1),0,1,'',0);  
+  $pdf2->CellFitScale(65,8,$Ort1,0,1,'',0);  
   
   //PDF anhängen
   $antrag = $pdf1->Output('S');
@@ -406,40 +407,13 @@ https://golf.hsv-wien.at';
   
   //EMail senden
   $mail->Send();
-		
-	}
-
-
-
-/*
-	{
-		$mail_body .= 'Anmeldung vom: '.date("F j, Y, g:i A")
-					."\r\n"."--------------------------------------------------------";
-
-		if($this->merge_post)
-		{
-			foreach($this->merge_post as $value)
-			{
-				$mail_body .= "\r\n".$this->quote_smart($value['elementlabel']).': '.$this->quote_smart($value['elementvalue']);
-			}
-		}
-		
-		$mail_body .= "\r\n\r\n"."--------------------------------------------------------";
-		$mail_body .= "\r\n".'IP address: '.$_SERVER['REMOTE_ADDR'];
-		$mail_body .= "\r\n".'Host: '.gethostbyaddr($_SERVER['REMOTE_ADDR']);
-
-		if($this->demo != 1)
-		{
-			mail($this->cfg['emailaddress'], $this->cfg['confirmation_email_subject'], $mail_body, $this->mailheaders_brut);
-
-		}
-	}
-*/
-	
-	function sendMailReceipt()
-	{
-		if($this->demo != 1)
-		{
+    
+  }
+  
+  function sendMailReceipt()
+  {
+    if($this->demo != 1)
+    {
   //Instanz von PHPMailer bilden
   $mail2 = new PHPMailer();
  
@@ -462,35 +436,35 @@ https://golf.hsv-wien.at';
   //erster Wert aus Array
   foreach($this->merge_post as $valuetitel)  break;
   {
-				$titel = $this->quote_smart($valuetitel['elementvalue']);
-			}
-			
+        $titel = $this->quote_smart($valuetitel['elementvalue']);
+      }
+      
   //Variablen setzen
   $hcp = $this->merge_post[18]['elementvalue'];
-  $Nachname = utf8_decode($this->merge_post[2]['elementvalue']);
+  $Nachname = $this->merge_post[2]['elementvalue'];
   $timestamp = time();
   $datum = date("d.m.Y", $timestamp);
-  $Geschlecht = utf8_decode($this->merge_post[3]['elementvalue']);
+  $Geschlecht = $this->merge_post[3]['elementvalue'];
   $Name = "{$titel} {$this->merge_post[1]['elementvalue']} {$this->merge_post[2]['elementvalue']}";
-  $Vorname = utf8_decode($this->merge_post[1]['elementvalue']);
+  $Vorname = $this->merge_post[1]['elementvalue'];
   $Vornach = "{$Vorname} {$Nachname}";
   $Adresse = "{$this->merge_post[6]['elementvalue']}, {$this->merge_post[7]['elementvalue']} {$this->merge_post[8]['elementvalue']}, {$this->merge_post[9]['elementvalue']}";
-  $Adresse1 = utf8_decode($this->merge_post[6]['elementvalue']);
+  $Adresse1 = $this->merge_post[6]['elementvalue'];
   $Adresse2 = "{$this->merge_post[7]['elementvalue']} {$this->merge_post[8]['elementvalue']}, {$this->merge_post[9]['elementvalue']}";
   $PLZ = $this->merge_post[7]['elementvalue'];
-  $Land = utf8_decode($this->merge_post[9]['elementvalue']);
-  $Ort = utf8_decode($this->merge_post[8]['elementvalue']);
+  $Land = $this->merge_post[9]['elementvalue'];
+  $Ort = $this->merge_post[8]['elementvalue'];
   $Telefon = $this->merge_post[10]['elementvalue'];
   $Mailformular = $this->merge_post[11]['elementvalue'];
   $Jahr = $this->merge_post[12]['elementvalue']; 
-  $Mitgliedschaft = utf8_decode($this->merge_post[13]['elementvalue']);
+  $Mitgliedschaft = $this->merge_post[13]['elementvalue'];
   $Promo = $this->merge_post[16]['elementvalue'];
-  $Ichbin = utf8_decode($this->merge_post[17]['elementvalue']);
+  $Ichbin = $this->merge_post[17]['elementvalue'];
   $Geburtsdatum = $this->merge_post[4]['elementvalue'];
-  $Staatsbuergerschaft = utf8_decode($this->merge_post[5]['elementvalue']);
-  $Ausweistyp = utf8_decode($this->merge_post[21]['elementvalue']);
+  $Staatsbuergerschaft = $this->merge_post[5]['elementvalue'];
+  $Ausweistyp = $this->merge_post[21]['elementvalue'];
   $Ausweisnummer = $this->merge_post[23]['elementvalue'];
-  $Ausweisbehoerde = utf8_decode($this->merge_post[22]['elementvalue']);
+  $Ausweisbehoerde = $this->merge_post[22]['elementvalue'];
   $Ausweisdatum = $this->merge_post[24]['elementvalue'];
   $Anmerkung = $this->merge_post[25]['elementvalue'];
   $Ort1 = "{$Ort}, {$datum}";
@@ -502,51 +476,51 @@ https://golf.hsv-wien.at';
   $Greenfee = $this->merge_post[15]['elementvalue'];
 
   if($Mitgliedschaft == 1){
-	  $Mitgliedschafttext = "Standard 199";
-	  $Mitgliedschaftwert = "199";
-	  }
+    $Mitgliedschafttext = "Standard 199";
+    $Mitgliedschaftwert = "199";
+    }
   if($Mitgliedschaft == 2){
-	  $Mitgliedschafttext = "Student 149";
-	  $Mitgliedschaftwert = "149";
-	  }
+    $Mitgliedschafttext = "Student 149";
+    $Mitgliedschaftwert = "149";
+    }
   if($Mitgliedschaft == 3){
-	  $Mitgliedschafttext = "Jugend 99";
-	  $Mitgliedschaftwert = "99";
-	  }
+    $Mitgliedschafttext = "Jugend 99";
+    $Mitgliedschaftwert = "99";
+    }
   if($Mitgliedschaft == 4){
-	  $Mitgliedschafttext = "Kinder 0";
-	  $Mitgliedschaftwert = "0";
-	  }
+    $Mitgliedschafttext = "Kinder 0";
+    $Mitgliedschaftwert = "0";
+    }
 
   if($Ichbin == 1){
-	  $ichbintext = "Platzerlaubnis";
-	  }
+    $ichbintext = "Platzerlaubnis";
+    }
   if($Ichbin == 2){
-	  $ichbintext = "Turniererlaubnis";
-	  }   
+    $ichbintext = "Turniererlaubnis";
+    }   
   if($Ichbin == 3){
-	  $ichbintext = "Clubvorgabe/Stammvorgabe";
-	  }
-	   
+    $ichbintext = "Clubvorgabe/Stammvorgabe";
+    }
+     
   //Inhalt setzen
   $mail_body = 'Zusatzinformationen:<br>Anmeldung vom: '.date("F j, Y, g:i A")
-					."<br>"."--------------------------------------------------------";
+          ."<br>"."--------------------------------------------------------";
 
-		if($this->merge_post)
-		{
-			foreach($this->merge_post as $value)
-			{
-				$mail_body .= "<br>".utf8_decode($this->quote_smart($value['elementlabel'])).': '.utf8_decode($this->quote_smart($value['elementvalue']));
-			}
-		}
-		
-		$mail_body .= "<br>"."--------------------------------------------------------";
-		$mail_body .= "<br>".'IP address: '.$_SERVER['REMOTE_ADDR'];
-		$mail_body .= "<br>".'Host: '.gethostbyaddr($_SERVER['REMOTE_ADDR']);
+    if($this->merge_post)
+    {
+      foreach($this->merge_post as $value)
+      {
+        $mail_body .= "<br>".$this->quote_smart($value['elementlabel']).': '.$this->quote_smart($value['elementvalue']);
+      }
+    }
+    
+    $mail_body .= "<br>"."--------------------------------------------------------";
+    $mail_body .= "<br>".'IP address: '.$_SERVER['REMOTE_ADDR'];
+    $mail_body .= "<br>".'Host: '.gethostbyaddr($_SERVER['REMOTE_ADDR']);
  
   $mail2->Body = "Datensatz fuer Import:<br>{$Promo};{$Anmerkung};{$hcp};{$Telefon};{$Mailformular};{$datum};;{$Mitgliedschaftwert};FALSCH;{$Mitgliedschafttext};;{$Adresse1};{$PLZ};{$Land};{$Ort};{$Geburtsdatum};{$Staatsbuergerschaft};;;;{$titel};{$Nachname};{$Vornach};{$Vorname};{$IBANDB};{$BIC};;WAHR;{$datum};{$Geschlecht}<br><br>{$mail_body}";
-	
-	//CSV
+  
+  //CSV
 //$file1 = "{$Promo};{$Anmerkung};{$hcp};'{$Telefon};{$Mailformular};{$datum};{$Mitgliedschaftwert};FALSCH;{$Mitgliedschafttext};;{$Adresse1};{$PLZ};{$Land};{$Ort};{$Geburtsdatum};{$Staatsbuergerschaft};;;;{$titel};{$Nachname};{$Vornach};{$Vorname};{$IBANDB};{$BIC};;WAHR;{$datum};{$Geschlecht}";
 $file1 = "{$Promo};{$Anmerkung};{$titel};{$Nachname};{$Vorname};{$Adresse1};{$PLZ};{$Ort};{$Land};{$Staatsbuergerschaft};{$Geburtsdatum};{$Geschlecht};'{$Telefon};{$Mailformular};{$hcp};{$datum};{$Mitgliedschafttext};;{$Mitgliedschaftwert};;;;{$Extracard};;;;{$Greenfee};;{$IBANDB};{$BIC};;;{$datum}";
 
@@ -557,48 +531,48 @@ $file2 = "Titel;Nachname;Vorname;Adresse;PLZ;Ort;Staat;Geburtsdatum;Geschlecht;T
 $file3 = "Titel;Nachname;Vorname;Adresse;PLZ;Ort;Staat;Erstellungsdatum;\r\n{$titel};{$Nachname};{$Vorname};{$Adresse1};{$PLZ};{$Ort};{$Land};{$datum}";
 
     //Attachment
-	$filename1 = "Datenbank Import {$Vornach}.csv";
-	$filename2 = "GC Anmeldung {$Vornach}.csv";
-	$filename3 = "Extra Anmeldung {$Vornach}.csv";
+  $filename1 = "Datenbank Import {$Vornach}.csv";
+  $filename2 = "GC Anmeldung {$Vornach}.csv";
+  $filename3 = "Extra Anmeldung {$Vornach}.csv";
     $mail2->AddStringAttachment($file1, $filename1, 'base64', 'text/csv');
     $mail2->AddStringAttachment($file2, $filename2, 'base64', 'text/csv');
     $mail2->AddStringAttachment($file3, $filename3, 'base64', 'text/csv');
-	
+  
     //EMail senden
     $mail2->Send();					
-			
-			//mail($this->cfg['emailaddress'], "Neues Mitglied HSV Sektion Golf", $value['form_emailnotificationmessage'], $this->mailheaders_brut);
-		}
-	}
-	
-	function mergePost($value)
-	{
-		$this->merge_post[$this->merge_post_index]['elementid'] = $value['elementid'];
-		$this->merge_post[$this->merge_post_index]['elementvalue'] = trim($value['elementvalue']);
-		$this->merge_post[$this->merge_post_index]['elementlabel'] = trim($value['label']);
-		$this->merge_post_index++;
-	}
-	
+      
+      //mail($this->cfg['emailaddress'], "Neues Mitglied HSV Sektion Golf", $value['form_emailnotificationmessage'], $this->mailheaders_brut);
+    }
+  }
+  
+  function mergePost($value)
+  {
+    $this->merge_post[$this->merge_post_index]['elementid'] = $value['elementid'];
+    $this->merge_post[$this->merge_post_index]['elementvalue'] = trim($value['elementvalue']);
+    $this->merge_post[$this->merge_post_index]['elementlabel'] = trim($value['label']);
+    $this->merge_post_index++;
+  }
+  
 
-	function isEmail($email)
-	{
-		$atom   = '[-a-z0-9\\_]';   // authorized caracters before @
-		$domain = '([a-z0-9]([-a-z0-9]*[a-z0-9]+)?)'; // authorized caracters after @
-									   
-		$regex = '/^' . $atom . '+' .   
-		'(\.' . $atom . '+)*' .         
-										
-		'@' .                           
-		'(' . $domain . '{1,63}\.)+' .  
-										
-		$domain . '{2,63}$/i';          
-		
-		// test de l'adresse e-mail
-		return preg_match($regex, trim($email)) ? 1 : 0;
-		
-	}
-	
-	
+  function isEmail($email)
+  {
+    $atom   = '[-a-z0-9\\_]';   // authorized caracters before @
+    $domain = '([a-z0-9]([-a-z0-9]*[a-z0-9]+)?)'; // authorized caracters after @
+                     
+    $regex = '/^' . $atom . '+' .   
+    '(\.' . $atom . '+)*' .         
+                    
+    '@' .                           
+    '(' . $domain . '{1,63}\.)+' .  
+                    
+    $domain . '{2,63}$/i';          
+    
+    // test de l'adresse e-mail
+    return preg_match($regex, trim($email)) ? 1 : 0;
+    
+  }
+  
+  
   /**
   * Nutzt addslashes() für PHP 8.3-Kompatibilität
   */
@@ -612,8 +586,8 @@ $file3 = "Titel;Nachname;Vorname;Adresse;PLZ;Ort;Staat;Erstellungsdatum;\r\n{$ti
     return $value;
   }
 
-	
-	
+  
+  
 }
 ?>
 
