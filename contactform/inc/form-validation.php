@@ -1,4 +1,5 @@
 <?php
+header('Content-Type: application/json');
 
 session_start();
 
@@ -35,6 +36,12 @@ if (isset($contactform_obj->merge_post) && is_array($contactform_obj->merge_post
 		echo json_encode(['status' => 'error', 'message' => 'Fehlerhafte Datenübertragung.']);
 		exit;
 	}
+// Erfolgreich verarbeitet – JSON-Antwort senden
+echo json_encode([
+	'status' => 'ok',
+	'message' => 'Formular erfolgreich verarbeitet.'
+]);
+exit;
 
 
 //-------------------------------------------
