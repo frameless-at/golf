@@ -590,15 +590,24 @@ $file3 = "Titel;Nachname;Vorname;Adresse;PLZ;Ort;Staat;Erstellungsdatum;\r\n{$ti
 	}
 	
 	
-	function quote_smart($value)
-	{
-		if(get_magic_quotes_gpc())
-		{
-			$value = stripslashes($value);
-		}
-		
-		return $value;
-	}
+/**
+   * Säubert einen Wert für SQL-Queries.
+   * Entfernt Aufrufe an entfernte magic_quotes-Funktionen für PHP 8-Kompatibilität.
+   */
+  protected function quote_smart($value)
+  {
+      // Wenn es keine Zahl ist, in einfache Anführungszeichen und escapen
+      if (!is_numeric($value)) {
+          // mysql_real_escape_string ist veraltet; falls du mysqli oder PDO nutzt, hier anpassen!
+          $escaped = function_exists('mysqli_real_escape_string')
+                   ? mysqli_real_escape_string($this->dbConnection, $value)
+                   : addslashes($value);
+  
+          $value = "'{$escaped}'";
+      }
+      return $value;
+  }
+
 
 	
 	
