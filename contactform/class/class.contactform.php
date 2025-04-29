@@ -1,6 +1,9 @@
 ﻿<?php
 require_once('class.fpdf.php');
-require_once('class.phpmailer.php');
+require 'vendor/autoload.php';
+
+use PHPMailer\PHPMailer\PHPMailer;
+use PHPMailer\PHPMailer\Exception;
 
 class FPDF_CellFit extends FPDF {
 
@@ -143,7 +146,6 @@ class contactForm{
     $this->cfg['form_emailnotificationtitle'] = $cfg['form_emailnotificationtitle'];
     $this->cfg['form_emailnotificationmessage'] = $cfg['form_emailnotificationmessage'];
     
-    $this->mailheaders_brut  = "From: HSV Sektion Golf <sl.golf@hsv-wien.at>\r\n";		
     $this->mailheaders_brut .= "Reply-To: HSV Sektion Golf <sl.golf@hsv-wien.at>\r\n";
     $this->mailheaders_brut .= "MIME-Version: 1.0\r\n";
     $this->mailheaders_brut .= "Content-type: text/plain; charset=utf-8\r\n";
@@ -156,65 +158,91 @@ class contactForm{
   
   function sendMail()
   {
-      // Titel gezielt aus Formularwerten extrahieren
-      $titel = '';
-      foreach ($this->merge_post as $entry) {
-          if (strtolower($entry['label']) === 'titel') {
-              $titel = trim($entry['elementvalue']);
-              break;
-          }
+    
+  //erster Wert aus Array
+  foreach($this->merge_post as $valuetitel)  break;
+  {
+        $titel = $this->quote_smart($valuetitel['elementvalue']);
       }
+
+  //Instanz von PHPMailer bilden
+  $mail = new PHPMailer(true);
   
-      $mail = new PHPMailer();
-      $mail->CharSet = 'UTF-8';
-      $mail->isHTML(true);
-      $mail->Encoding = 'quoted-printable'; // ← WICHTIG für gute Darstellung
-      $mail->From = "sl.golf@hsv-wien.at";
-      $mail->FromName = "HSV wiengolf";
+  $mail->CharSet = 'UTF-8';
+  $mail->Encoding = 'base64';
+  $mail->isHTML(true);
+  $mail->ContentType = 'multipart/mixed';
+
+  //Absenderadresse der Email setzen
+  $mail->From = "sl.golf@hsv-wien.at";
   
-      $Mailadress = $this->merge_post[11]['elementvalue'];
-      $mail->AddAddress($Mailadress);
-      $mail->Subject = 'Herzlich Willkommen zum HSV wiengolf';
+  //Name des Abenders setzen
+  $mail->FromName = "HSV wiengolf";
   
-      $Anrede = ($this->merge_post[3]['elementvalue'] === "weiblich") ? "geehrte Frau" : "geehrter Herr";
-      $Nachname = $this->merge_post[2]['elementvalue'];
+  //Empfängeradresse setzen
+  $Mailadress = $this->merge_post[11]['elementvalue'];
+  $mail->AddAddress($Mailadress);
+  //$mail->AddAddress("luka@nikolic.at");
   
-      // HTML-Mail-Body
-      $mail->Body = "<!DOCTYPE html><html><body>
-  <p>Sehr {$Anrede} {$titel} {$Nachname},</p>
-  Ihre Onlineanmeldung wurde erfolgreich empfangen.<br>
-  Anbei erhalten Sie die ausgefüllten Anmeldeunterlagen mit der Bitte diese unterfertigt zurückzuschicken.<br>
-  Um eine schnelle Bearbeitung sicherstellen zu können, ersuchen wir Sie diese per Mail an 
-  <a href='mailto:sl.golf@hsv-wien.at'>sl.golf@hsv-wien.at</a> zu senden.<br>
-  Alternativ können Sie die Unterlagen auch per Post an unser Sekretariat senden.<br><br>
-  HSV WIEN<br>
-  In den Gabrissen 91<br>
-  1210 Wien<br><br>
-  Nach Erhalt der unterfertigten Unterlagen dauert die Bearbeitung des Antrages nur wenige Tage.<br>
-  Sie erhalten von uns mit der durchgeführten Anmeldung eine Nachricht.<br>
-  Ab diesem Zeitpunkt sind Sie am ÖGV-Server eingetragen und können spielen gehen.<br>
-  Die Übermittlung der ÖGV Karte dauert je nach Auftragsvolumen und Druckterminen 4-8 Wochen.<br><br>
-  Mit freundlichen Grüßen und schönes Spiel<br><br>
-  Michael Blaha, MSc<br>
-  Präsident<br>
-  HSV WIEN<br>
-  <a href='https://golf.hsv-wien.at'>https://golf.hsv-wien.at</a><br>
-  <p><img src='https://golf.hsv-wien.at/golfanmeldung/logo_mail.png' alt='logo'></p>
-  </body></html>";
-  
-  // Plaintext-Version als Fallback
-  $mail->AltBody = "Sehr {$Anrede} {$titel} {$Nachname},\n\n" .
-      "Ihre Onlineanmeldung wurde erfolgreich empfangen.\n" .
-      "Anbei erhalten Sie die ausgefüllten Anmeldeunterlagen mit der Bitte diese unterfertigt zurückzuschicken.\n" .
-      "Um eine schnelle Bearbeitung sicherzustellen, ersuchen wir Sie diese per Mail an sl.golf@hsv-wien.at zu senden.\n" .
-      "Alternativ können Sie die Unterlagen auch per Post an unser Sekretariat senden.\n\n" .
-      "HSV WIEN\nIn den Gabrissen 91\n1210 Wien\n\n" .
-      "Nach Erhalt der unterfertigten Unterlagen dauert die Bearbeitung des Antrages nur wenige Tage.\n" .
-      "Sie erhalten von uns mit der durchgeführten Anmeldung eine Nachricht.\n" .
-      "Ab diesem Zeitpunkt sind Sie am ÖGV-Server eingetragen und können spielen gehen.\n" .
-      "Die Übermittlung der ÖGV Karte dauert je nach Auftragsvolumen und Druckterminen 4-8 Wochen.\n\n" .
-      "Mit freundlichen Grüßen und schönes Spiel\n\n" .
-      "Michael Blaha, MSc\nPräsident\nHSV WIEN\nhttps://golf.hsv-wien.at";
+  //Betreff der Email setzen
+  $mail->Subject = 'Herzlich Willkommen zum HSV wiengolf';
+ 
+  //Anrede
+  if($this->merge_post[3]['elementvalue'] == "weiblich")
+  { $Anrede = "geehrte Frau";
+    }else
+    { $Anrede = "geehrter Herr";
+  }
+  $Nachname = $this->merge_post[2]['elementvalue'];
+ 
+//Text der EMail setzen
+  $mail->Body = "<!DOCTYPE html><html><body>
+<p>Sehr {$Anrede} {$titel} {$Nachname},</p>
+Ihre Onlineanmeldung wurde erfolgreich empfangen.<br>
+Anbei erhalten Sie die ausgefüllten Anmeldeunterlagen mit der Bitte diese unterfertigt zurückzuschicken.<br>
+Um eine schnelle Bearbeitung sicherstellen zu können, ersuchen wir Sie diese per Mail an <a href='mailto:sl.golf@hsv-wien.at'>sl.golf@hsv-wien.at</a> zu senden.<br>
+Alternativ können Sie die Unterlagen auch per Post an unser Sekretariat senden.<br>
+<br>
+HSV WIEN<br>
+In den Gabrissen 91<br>
+1210 Wien<br>
+<br>
+Nach Erhalt der unterfertigten Unterlagen dauert die Bearbeitung des Antrages nur wenige Tage.<br>
+Sie erhalten von uns mit der durchgeführten Anmeldung eine Nachricht.<br>
+Ab diesem Zeitpunkt sind Sie am ÖGV-Server eingetragen und können spielen gehen.<br>
+Die Übermittlung der ÖGV Karte dauert je nach Auftragsvolumen und Druckterminen 4-8 Wochen.<br>
+<br>
+Mit freundlichen Grüßen und schönes Spiel<br>
+<br>
+Michael Blaha, MSc<br>
+Präsident<br>
+HSV WIEN<br>
+<a href='https://golf.hsv-wien.at'>https://golf.hsv-wien.at</a><br>
+<p><img src='https://golf.hsv-wien.at/golfanmeldung/logo_mail.png' alt='logo'></p></body></html>
+";
+
+$mail->AltBody = "Sehr {$Anrede} {$titel} {$this->merge_post[2]['elementvalue']},
+Ihre Onlineanmeldung wurde erfolgreich empfangen.
+Anbei erhalten Sie die ausgefüllten Anmeldeunterlagen mit der Bitte diese unterfertigt zurückzuschicken.
+Um eine schnelle Bearbeitung sicherstellen zu können, ersuchen wir Sie diese per Mail an sl.golf@hsv-wien.at zu senden.
+Alternativ können Sie die Unterlagen auch per Post an unser Sekretariat senden.
+
+HSV WIEN
+In den Gabrissen 91
+1210 Wien
+
+Nach Erhalt der unterfertigten Unterlagen dauert die Bearbeitung des Antrages nur wenige Tage.
+Sie erhalten von uns mit der durchgeführten Anmeldung eine Nachricht.
+Ab diesem Zeitpunkt sind Sie am ÖGV-Server eingetragen und können spielen gehen.
+Die Übermittlung der ÖGV Karte dauert je nach Auftragsvolumen und Druckterminen 4-8 Wochen.
+
+Mit freundlichen Grüßen und schönes Spiel
+
+Michael Blaha, MSc
+Präsident
+HSV WIEN
+https://golf.hsv-wien.at';
+";
     
   //Variablen Definieren
   $timestamp = time();
@@ -389,7 +417,7 @@ class contactForm{
     if($this->demo != 1)
     {
   //Instanz von PHPMailer bilden
-  $mail2 = new PHPMailer();
+  $mail2 = new PHPMailer(true);
  
   //Format setzen
   $mail2->IsHTML(true);
