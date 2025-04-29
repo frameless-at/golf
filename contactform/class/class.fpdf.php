@@ -1,4 +1,19 @@
 <?php
+// ────────────────────────────────────────────────────────────────
+// PHP 8.x hat magic_quotes entfernt – Stub-Funktionen definieren
+// ────────────────────────────────────────────────────────────────
+if (!function_exists('get_magic_quotes_gpc')) {
+	function get_magic_quotes_gpc() { return false; }
+}
+if (!function_exists('get_magic_quotes_runtime')) {
+	function get_magic_quotes_runtime() { return false; }
+}
+if (!function_exists('set_magic_quotes_runtime')) {
+	function set_magic_quotes_runtime($new) { return false; }
+}
+
+// Ab hier kommt der Original-Code der FPDF-Klasse:
+
 /*******************************************************************************
 * FPDF                                                                         *
 *                                                                              *
