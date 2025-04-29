@@ -1,11 +1,8 @@
 <?php
-$host = str_replace('www.', '', $_SERVER['HTTP_HOST']);
 
-if ($host !== 'golf.frameless.at') {
-	$cfg['email'] = 'm.kozak@hframeless.at';
-} else {
-	$cfg['email'] = 'sl.golf@hsv-wien.at';
-}
+
+$cfg['email'] = 'm.kozak@frameless.at';
+//$cfg['email'] = 'sl.golf@hsv-wien.at';
 
 // Gültiger Promocode
 $cfg['promo_code'] = 'GOLF2025';
