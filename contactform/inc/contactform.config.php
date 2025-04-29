@@ -7,6 +7,9 @@ if ($host !== 'golf.frameless.at') {
 	$cfg['email'] = 'sl.golf@hsv-wien.at';
 }
 
+// Gültiger Promocode
+$cfg['promo_code'] = 'GOLF2025';
+
 $cfg['form_validationmessage'] = 'Die Generierung Ihres Mitgliedsantrags war erfolgreich. Sie erhalten umgehend Ihr Anmeldeformular per E-Mail.<br /><br />Schönes Spiel, Ihr HSV wiengolf';
 $cfg['form_error_captcha'] = 'Wert stimmt nicht &uuml;berein';
 $cfg['form_error_emptyfield'] = 'Dieses Feld muss ausgefüllt werden.';
