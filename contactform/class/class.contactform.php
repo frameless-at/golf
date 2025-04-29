@@ -171,16 +171,17 @@ class contactForm{
   
   function sendMail()
   {
-    
-  //erster Wert aus Array
-  foreach($this->merge_post as $valuetitel)  break;
-  {
-     $titel = trim($valuetitel['elementvalue']);
+  foreach($this->merge_post as $valuetitel) break;
+    $titel = trim($valuetitel['elementvalue']);
+  
+  // Umwandlung auf Latin1 für PDF
+  foreach ($this->merge_post as &$field) {
+      $field['elementvalue'] = utf8_decode($field['elementvalue']);
   }
+  unset($field);
 
   //Instanz von PHPMailer bilden
   $mail = new PHPMailer(true);
-  
   $mail->CharSet = 'UTF-8';
   $mail->Encoding = 'base64';
   $mail->isHTML(true);
