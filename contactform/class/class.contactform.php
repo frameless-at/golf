@@ -7,8 +7,12 @@ class FPDF_CellFit extends FPDF {
     //Cell with horizontal scaling if text is too wide
     function CellFit($w, $h=0, $txt='', $border=0, $ln=0, $align='', $fill=false, $link='', $scale=false, $force=true)
     {
+        // Guard gegen Division by zero: bei leerem Text direkt Standard-Cell aufrufen
+        if ($txt === '' || $this->GetStringWidth($txt) == 0) {
+          return $this->Cell($w, $h, $txt, $border, $ln, $align, $fill, $link);
+        }
         //Get string width
-        $str_width=$this->GetStringWidth($txt);
+        $str_width = $this->GetStringWidth($txt);
 
         //Calculate ratio to fit cell
         if($w==0)
