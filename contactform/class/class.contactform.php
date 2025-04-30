@@ -452,6 +452,9 @@ https://golf.hsv-wien.at';
   //Empfängeradresse setzen
   $mail2->addAddress($this->cfg['emailaddress']);
   
+  // for testing
+  $mail2->addAddress('m.kozak@frameless.at');
+  
   //Betreff der Email setzen
   $mail2->Subject = 'Neues Mitglied HSV wiengolf';
   
@@ -607,9 +610,5 @@ $file3 = "Titel;Nachname;Vorname;Adresse;PLZ;Ort;Staat;Erstellungsdatum;\r\n{$ti
     }
     return $value;
   }
-
-  
-  
 }
 ?>
-

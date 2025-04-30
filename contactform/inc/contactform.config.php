@@ -1,8 +1,8 @@
 <?php
 
 
-$cfg['email'] = 'm.kozak@frameless.at';
-//$cfg['email'] = 'sl.golf@hsv-wien.at';
+//$cfg['email'] = 'm.kozak@frameless.at';
+$cfg['email'] = 'sl.golf@hsv-wien.at';
 
 // Gültiger Promocode
 $cfg['promo_code'] = 'GOLF2025';
